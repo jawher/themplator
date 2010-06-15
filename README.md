@@ -1,7 +1,7 @@
 Themplator
 =======================
 
-Wicket-like t(h)emplating library based on StAX. It is in an earlier than early stage 
+Wicket-like t(h)emplating library written in Java and based on StAX. It is in an earlier than early stage 
 and only offers a couple of controlling bricks, namely :
 
 * Label: similar to Wicket's Label component, it is used to set an element's text
@@ -59,6 +59,7 @@ Given this markup :
     	</div>
     	<h1 thid="invisible">title</h1>
     </root>
+
 
 
 The above can be manipulated using themplator's bricks :
