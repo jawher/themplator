@@ -45,7 +45,7 @@ public class ListRepeaterTest extends BaseBrickTest<ListRepeater<?>> {
 	}
 
 	@Test
-	public void testTextNoBody() {
+	public void testRepeatWithLabelNoBody() {
 		List<Integer> list = new ArrayList<Integer>(Arrays
 				.asList(1, 3, 5, 7, 9));
 		ListRepeater<Integer> repeater = new ListRepeater<Integer>("item",
@@ -65,7 +65,7 @@ public class ListRepeaterTest extends BaseBrickTest<ListRepeater<?>> {
 	}
 
 	@Test
-	public void testNotVisible() {
+	public void testRepeatWithLabelNotVisible() {
 		List<Integer> list = new ArrayList<Integer>(Arrays
 				.asList(1, 3, 5, 7, 9));
 		ListRepeater<Integer> repeater = new ListRepeater<Integer>("item",
@@ -82,6 +82,19 @@ public class ListRepeaterTest extends BaseBrickTest<ListRepeater<?>> {
 
 		test("resources/list-repeater2.input.xml",
 				"resources/list-repeater2.not-visible.output.xml", repeater);
+	}
+	
+	@Test(expected=UnsupportedOperationException.class)
+	public void testNoChildren(){
+		ListRepeater<Integer> repeater = new ListRepeater<Integer>("item",
+				new SimpleModel<List<Integer>>(new ArrayList<Integer>())) {
+
+			@Override
+			protected void populate(ListItem<Integer> item) {
+
+			}
+		};
+		repeater.add(new Label("id", new SimpleModel<String>()));
 	}
 
 }
