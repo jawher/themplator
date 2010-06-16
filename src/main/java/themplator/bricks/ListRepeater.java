@@ -80,6 +80,16 @@ public abstract class ListRepeater<T> extends Brick<List<T>> {
 	public Collection<Decorator> getDecorators() {
 		return currentItem.getDecorators();
 	}
+	
+	@Override
+	public boolean isVisible() {
+		return currentItem.isVisible();
+	}
+	
+	@Override
+	public boolean isRenderBodyOnly() {
+		return currentItem.isRenderBodyOnly();
+	}
 
 	protected abstract void populate(ListItem<T> item);
 
