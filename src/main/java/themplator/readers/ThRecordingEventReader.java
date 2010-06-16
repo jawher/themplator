@@ -1,4 +1,4 @@
-package themplators.readers;
+package themplator.readers;
 
 import java.util.ArrayList;
 import java.util.List;

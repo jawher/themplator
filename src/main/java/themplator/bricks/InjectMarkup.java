@@ -13,12 +13,12 @@ import javax.xml.stream.events.StartElement;
 
 import themplator.Brick;
 import themplator.Model;
+import themplator.readers.ThChainingEventReader;
+import themplator.readers.ThElementEventReader;
+import themplator.readers.ThEventReader;
+import themplator.readers.ThReplayEventReader;
 import themplator.writers.ThEventWriter;
 import themplator.writers.ThNopEventWriter;
-import themplators.readers.ThChainingEventReader;
-import themplators.readers.ThElementEventReader;
-import themplators.readers.ThEventReader;
-import themplators.readers.ThReplayEventReader;
 
 public class InjectMarkup<T> extends Brick<T> {
 	private static final QName TH_BRICK = new QName("themplator", "brick", "th");

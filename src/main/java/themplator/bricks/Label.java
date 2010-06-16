@@ -7,9 +7,9 @@ import javax.xml.stream.events.StartElement;
 
 import themplator.Brick;
 import themplator.Model;
+import themplator.readers.ThEventReader;
 import themplator.writers.ThEventWriter;
 import themplator.writers.ThNopEventWriter;
-import themplators.readers.ThEventReader;
 
 public class Label extends Brick<String> {
 

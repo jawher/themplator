@@ -15,12 +15,12 @@ import javax.xml.stream.events.XMLEvent;
 
 import org.junit.Test;
 
+import themplator.readers.ThElementEventReader;
+import themplator.readers.ThEventReader;
+import themplator.readers.ThStaxEventReader;
+import themplator.readers.ThWhitespaceStripperEventReader;
 import themplator.utils.LogUtils;
 import themplator.utils.StaxUtils;
-import themplators.readers.ThElementEventReader;
-import themplators.readers.ThEventReader;
-import themplators.readers.ThStaxEventReader;
-import themplators.readers.ThWhitespaceStripperEventReader;
 
 public class ThWhitespaceStripperEventReaderTest {
 	@Test

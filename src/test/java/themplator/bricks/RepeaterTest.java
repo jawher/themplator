@@ -5,7 +5,6 @@ import org.junit.Test;
 import themplator.models.SimpleModel;
 
 public class RepeaterTest extends BaseBrickTest<Repeater> {
-	
 
 	@Test
 	public void testRepeat() {
@@ -29,5 +28,4 @@ public class RepeaterTest extends BaseBrickTest<Repeater> {
 				"resources/repeater1.not-visible.output.xml", repeater);
 	}
 
-	
 }

@@ -13,11 +13,11 @@ import javax.xml.stream.events.Attribute;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 
+import themplator.readers.ThEventReader;
+import themplator.readers.ThStaxEventReader;
 import themplator.utils.StaxUtils;
 import themplator.writers.ThEventWriter;
 import themplator.writers.ThStaxEventWriter;
-import themplators.readers.ThEventReader;
-import themplators.readers.ThStaxEventReader;
 
 public class Themplate extends AbstractBrick {
 

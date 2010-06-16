@@ -16,9 +16,9 @@ import javax.xml.stream.events.EndElement;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 
+import themplator.readers.ThEventReader;
 import themplator.writers.ThEventWriter;
 import themplator.writers.ThNopEventWriter;
-import themplators.readers.ThEventReader;
 
 public class Brick<T> extends AbstractBrick {
 	protected Model<T> model;

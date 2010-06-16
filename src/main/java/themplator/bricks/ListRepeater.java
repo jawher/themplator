@@ -12,11 +12,11 @@ import themplator.Brick;
 import themplator.Decorator;
 import themplator.Model;
 import themplator.models.SimpleModel;
+import themplator.readers.ThEventReader;
+import themplator.readers.ThLoggingEventReader;
+import themplator.readers.ThRecordingEventReader;
+import themplator.readers.ThReplayEventReader;
 import themplator.writers.ThEventWriter;
-import themplators.readers.ThEventReader;
-import themplators.readers.ThLoggingEventReader;
-import themplators.readers.ThRecordingEventReader;
-import themplators.readers.ThReplayEventReader;
 
 public abstract class ListRepeater<T> extends Brick<List<T>> {
 

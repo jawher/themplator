@@ -1,4 +1,4 @@
-package themplators.readers;
+package themplator.readers;
 
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLStreamException;

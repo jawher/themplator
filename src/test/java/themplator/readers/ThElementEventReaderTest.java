@@ -15,10 +15,10 @@ import javax.xml.stream.events.XMLEvent;
 
 import org.junit.Test;
 
+import themplator.readers.ThElementEventReader;
+import themplator.readers.ThStaxEventReader;
 import themplator.utils.LogUtils;
 import themplator.utils.StaxUtils;
-import themplators.readers.ThElementEventReader;
-import themplators.readers.ThStaxEventReader;
 
 public class ThElementEventReaderTest {
 	@Test

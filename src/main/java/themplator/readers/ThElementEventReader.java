@@ -1,4 +1,4 @@
-package themplators.readers;
+package themplator.readers;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLEventReader;

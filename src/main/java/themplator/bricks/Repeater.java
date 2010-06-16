@@ -9,10 +9,10 @@ import javax.xml.stream.events.XMLEvent;
 
 import themplator.Brick;
 import themplator.Model;
+import themplator.readers.ThEventReader;
+import themplator.readers.ThRecordingEventReader;
+import themplator.readers.ThReplayEventReader;
 import themplator.writers.ThEventWriter;
-import themplators.readers.ThEventReader;
-import themplators.readers.ThRecordingEventReader;
-import themplators.readers.ThReplayEventReader;
 
 public class Repeater extends Brick<Long> {
 
