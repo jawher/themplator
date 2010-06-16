@@ -27,7 +27,7 @@ public abstract class BaseBrickTest<T extends Brick<?>> {
 			ByteArrayOutputStream os = new ByteArrayOutputStream();
 
 			th.render(getClass().getResourceAsStream(input), os);
-			System.out.println(new String(os.toByteArray()));
+			
 			assertXMLEqual(new InputSource(getClass().getResourceAsStream(
 					output)), new InputSource(new ByteArrayInputStream(os
 					.toByteArray())));
