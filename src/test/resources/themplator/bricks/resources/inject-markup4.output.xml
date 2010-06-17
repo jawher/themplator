@@ -1,0 +1,8 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<root>
+	<container thid="container">
+		<content>
+			<random attr="val" thid="content">magic</random>
+		</content>
+	</container>
+</root>
