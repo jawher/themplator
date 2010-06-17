@@ -6,7 +6,6 @@ import java.util.Arrays;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLResolver;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.EndElement;
 import javax.xml.stream.events.StartElement;
@@ -43,7 +42,6 @@ public class InjectMarkup<T> extends Brick<T> {
 	@Override
 	protected void render(StartElement e, ThEventReader thr, ThEventWriter thw)
 			throws XMLStreamException {
-		//renderHead(e, thr, thw);
 		XMLInputFactory xmlInputFactory = XMLInputFactory.newFactory();
 		xmlInputFactory.setProperty(XMLInputFactory.IS_VALIDATING, false);
 		xmlInputFactory.setProperty(
@@ -52,47 +50,13 @@ public class InjectMarkup<T> extends Brick<T> {
 				Boolean.TRUE);
 		xmlInputFactory
 				.setProperty(XMLInputFactory.IS_COALESCING, Boolean.TRUE);
-		xmlInputFactory.setXMLResolver(new XMLResolver() {
-
-			public Object resolveEntity(String publicID, String systemID,
-					String baseURI, String namespace) throws XMLStreamException {
-				System.out.println("resolve " + publicID + ", " + systemID
-						+ ", " + baseURI + ", " + namespace);
-				return null;
-			}
-		});
 
 		XMLEventReader evr = xmlInputFactory.createXMLEventReader(markup);
 		EndElement ee = renderBody(thr, new ThNopEventWriter());
-		ThEventReader othr = new ThChainingEventReader(new ThElementEventReader(TH_BRICK, evr), new ThReplayEventReader(Arrays.asList(ee)));
+		ThEventReader othr = new ThChainingEventReader(
+				new ThElementEventReader(TH_BRICK, evr),
+				new ThReplayEventReader(Arrays.asList(ee)));
 
 		super.render(e, othr, thw);
-		
-
-		/*boolean emit = false;
-		while (othr.hasNext()) {
-			XMLEvent ev = othr.next();
-			if (emit) {
-				if (ev.isEndElement()
-						&& ev.asEndElement().getName().equals(TH_BRICK)) {
-					emit = false;
-
-				} else {
-					thw.add(ev);
-				}
-
-			} else {
-				if (ev.isStartElement()) {
-					StartElement se = ev.asStartElement();
-					if (se.getName().equals(TH_BRICK)) {
-						emit = true;
-					}
-				}
-			}
-		}
-
-		EndElement ee = renderBody(thr, new ThNopEventWriter());
-		renderTail(ee, thr, thw);*/
-		
 	}
 }
