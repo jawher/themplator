@@ -3,10 +3,7 @@ package themplator;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
-import java.util.SortedSet;
-import java.util.TreeSet;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLEventFactory;
@@ -17,6 +14,7 @@ import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 
 import themplator.readers.ThEventReader;
+import themplator.utils.Pair;
 import themplator.writers.ThEventWriter;
 import themplator.writers.ThNopEventWriter;
 
@@ -125,11 +123,12 @@ public class Brick<T> extends AbstractBrick {
 		}
 
 		boolean cachedRenderBodyOnly = isRenderBodyOnly();
-		if (!cachedRenderBodyOnly) {
-			SortedSet<XMLEvent> preStartEvents = new TreeSet<XMLEvent>(
-					AttrThenCharThenElem.INSTANCE);
+		Collection<Decorator> decorators = getDecorators();
 
-			for (Decorator d : getDecorators()) {
+		if (!cachedRenderBodyOnly) {
+			List<XMLEvent> preStartEvents = new ArrayList<XMLEvent>();
+
+			for (Decorator d : decorators) {
 				preStartEvents.addAll(d.preBrickStartElement(XMLEventFactory
 						.newFactory()));
 			}
@@ -141,16 +140,20 @@ public class Brick<T> extends AbstractBrick {
 			evw.add(e);
 		}
 
-		SortedSet<XMLEvent> postStartEvents = new TreeSet<XMLEvent>(
-				AttrThenCharThenElem.INSTANCE);
-		for (Decorator d : getDecorators()) {
-			postStartEvents.addAll(d.postBrickStartElement(XMLEventFactory
+		List<List<XMLEvent>> postStartEvents = new ArrayList<List<XMLEvent>>();
+		for (Decorator d : decorators) {
+			postStartEvents.add(d.postBrickStartElement(XMLEventFactory
 					.newFactory()));
 		}
-		for (XMLEvent xmlEvent : postStartEvents) {
-			if (!cachedRenderBodyOnly || !xmlEvent.isAttribute()) {
+
+		Pair<List<XMLEvent>, List<XMLEvent>> sortedPostStartEvents = sortOpenEvents(postStartEvents);
+		if (!cachedRenderBodyOnly) {
+			for (XMLEvent xmlEvent : sortedPostStartEvents.getLeft()) {
 				evw.add(xmlEvent);
 			}
+		}
+		for (XMLEvent xmlEvent : sortedPostStartEvents.getRight()) {
+			evw.add(xmlEvent);
 		}
 	}
 
@@ -159,16 +162,15 @@ public class Brick<T> extends AbstractBrick {
 		if (!isVisible()) {
 			return;
 		}
-		SortedSet<XMLEvent> preEndEvents = new TreeSet<XMLEvent>(
-				AttrThenCharThenElem.INSTANCE);
 
 		XMLEventFactory xmlEventFactory = XMLEventFactory.newFactory();
-		for (Decorator d : getDecorators()) {
-			preEndEvents.addAll(d.preBrickEndElement(xmlEventFactory));
-		}
+		Collection<Decorator> decorators = getDecorators();
+		for (Decorator d : decorators) {
+			List<XMLEvent> preEndEvents = d.preBrickEndElement(xmlEventFactory);
 
-		for (XMLEvent xmlEvent : preEndEvents) {
-			evw.add(xmlEvent);
+			for (XMLEvent xmlEvent : preEndEvents) {
+				evw.add(xmlEvent);
+			}
 		}
 
 		boolean cachedRenderBodyOnly = isRenderBodyOnly();
@@ -178,14 +180,14 @@ public class Brick<T> extends AbstractBrick {
 			return;
 		}
 
-		SortedSet<XMLEvent> postEndEvents = new TreeSet<XMLEvent>(
-				AttrThenCharThenElem.INSTANCE);
-		for (Decorator d : getDecorators()) {
-			postEndEvents.addAll(d.postBrickEndElement(xmlEventFactory));
+		for (Decorator d : decorators) {
+			List<XMLEvent> postEndEvents = d
+					.postBrickEndElement(xmlEventFactory);
+			for (XMLEvent xmlEvent : postEndEvents) {
+				evw.add(xmlEvent);
+			}
 		}
-		for (XMLEvent xmlEvent : postEndEvents) {
-			evw.add(xmlEvent);
-		}
+
 	}
 
 	private String thid(StartElement e) {
@@ -197,24 +199,27 @@ public class Brick<T> extends AbstractBrick {
 		}
 	}
 
-	// FIXME: c'est pas aussi simple
-	private static final class AttrThenCharThenElem implements
-			Comparator<XMLEvent> {
-		public static final Comparator<XMLEvent> INSTANCE = new AttrThenCharThenElem();
-
-		public int compare(XMLEvent o1, XMLEvent o2) {
-			if (o1.isAttribute()) {
-				return -1;
-			} else if (o2.isAttribute()) {
-				return 1;
-			} else if (o1.isCharacters()) {
-				return -1;
-			} else if (o2.isCharacters()) {
-				return -1;
-			} else
-				return 0;
+	private Pair<List<XMLEvent>, List<XMLEvent>> sortOpenEvents(
+			List<List<XMLEvent>> eventsList) {
+		List<XMLEvent> headAttrs = new ArrayList<XMLEvent>();
+		List<XMLEvent> others = new ArrayList<XMLEvent>();
+		for (List<XMLEvent> events : eventsList) {
+			boolean head = true;
+			for (XMLEvent ev : events) {
+				if (head) {
+					if (ev.isAttribute()) {
+						headAttrs.add(ev);
+					} else {
+						head = false;
+						others.add(ev);
+					}
+				} else {
+					others.add(ev);
+				}
+			}
 		}
 
+		return new Pair<List<XMLEvent>, List<XMLEvent>>(headAttrs, others);
 	}
 
 }
