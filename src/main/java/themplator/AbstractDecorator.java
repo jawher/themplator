@@ -9,6 +9,10 @@ import javax.xml.stream.events.XMLEvent;
 @SuppressWarnings("restriction")
 public abstract class AbstractDecorator<T> implements Decorator<T> {
 
+	public void bind(Brick<T> brick) {
+
+	}
+
 	public List<? extends XMLEvent> postBrickEndElement(
 			XMLEventFactory eventFactory) {
 		return Collections.EMPTY_LIST;
