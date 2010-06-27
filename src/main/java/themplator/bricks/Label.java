@@ -22,7 +22,7 @@ public class Label extends Brick<String> {
 			throws XMLStreamException {
 		renderHead(e, thr, thw);
 		if (isVisible()) {
-			XMLEventFactory xmlEventFactory = XMLEventFactory.newFactory();
+			XMLEventFactory xmlEventFactory = XMLEventFactory.newInstance();
 			thw.add(xmlEventFactory.createCharacters(getModel().get()));
 		}
 		EndElement ee = renderBody(thr, new ThNopEventWriter());

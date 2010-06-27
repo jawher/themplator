@@ -132,7 +132,7 @@ public class Brick<T> extends AbstractBrick {
 
 			for (Decorator d : decorators) {
 				preStartEvents.addAll(d.preBrickStartElement(XMLEventFactory
-						.newFactory()));
+						.newInstance()));
 			}
 
 			for (XMLEvent xmlEvent : preStartEvents) {
@@ -145,7 +145,7 @@ public class Brick<T> extends AbstractBrick {
 		List<List<XMLEvent>> postStartEvents = new ArrayList<List<XMLEvent>>();
 		for (Decorator d : decorators) {
 			postStartEvents.add(d.postBrickStartElement(XMLEventFactory
-					.newFactory()));
+					.newInstance()));
 		}
 
 		Pair<List<XMLEvent>, List<XMLEvent>> sortedPostStartEvents = sortOpenEvents(postStartEvents);
@@ -165,7 +165,7 @@ public class Brick<T> extends AbstractBrick {
 			return;
 		}
 
-		XMLEventFactory xmlEventFactory = XMLEventFactory.newFactory();
+		XMLEventFactory xmlEventFactory = XMLEventFactory.newInstance();
 		Collection<Decorator> decorators = getDecorators();
 		for (Decorator d : decorators) {
 			List<XMLEvent> preEndEvents = d.preBrickEndElement(xmlEventFactory);

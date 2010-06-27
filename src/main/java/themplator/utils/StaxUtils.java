@@ -4,7 +4,7 @@ import javax.xml.stream.XMLInputFactory;
 
 public class StaxUtils {
 	public static XMLInputFactory createInputFactory() {
-		XMLInputFactory xmlInputFactory = XMLInputFactory.newFactory();
+		XMLInputFactory xmlInputFactory = XMLInputFactory.newInstance();
 		xmlInputFactory.setProperty(XMLInputFactory.IS_VALIDATING, false);
 		xmlInputFactory.setProperty(
 				XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, false);

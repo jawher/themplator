@@ -42,7 +42,7 @@ public class InjectMarkup<T> extends Brick<T> {
 	@Override
 	protected void render(StartElement e, ThEventReader thr, ThEventWriter thw)
 			throws XMLStreamException {
-		XMLInputFactory xmlInputFactory = XMLInputFactory.newFactory();
+		XMLInputFactory xmlInputFactory = XMLInputFactory.newInstance();
 		xmlInputFactory.setProperty(XMLInputFactory.IS_VALIDATING, false);
 		xmlInputFactory.setProperty(
 				XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, false);

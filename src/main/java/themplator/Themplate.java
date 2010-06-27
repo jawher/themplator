@@ -44,12 +44,13 @@ public class Themplate extends AbstractBrick {
 			}
 		}
 	}
+
 	public void render(InputStream markup, OutputStream result)
 			throws XMLStreamException {
 		XMLInputFactory xmlInputFactory = StaxUtils.createInputFactory();
 		XMLEventReader evr = xmlInputFactory.createXMLEventReader(markup);
 
-		XMLOutputFactory xmlOutputFactory = XMLOutputFactory.newFactory();
+		XMLOutputFactory xmlOutputFactory = XMLOutputFactory.newInstance();
 
 		XMLEventWriter evw = xmlOutputFactory.createXMLEventWriter(result);
 
