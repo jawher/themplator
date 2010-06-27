@@ -13,6 +13,7 @@ import javax.xml.stream.events.EndElement;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 
+import themplator.readers.ThElementEventReader;
 import themplator.readers.ThEventReader;
 import themplator.utils.Pair;
 import themplator.writers.ThEventWriter;
@@ -86,24 +87,25 @@ public class Brick<T> extends AbstractBrick {
 	protected EndElement renderBody(ThEventReader thr, ThEventWriter thw)
 			throws XMLStreamException {
 		boolean cachedVisible = isVisible();
-		int depth = 0;
 		while (thr.hasNext()) {
 			XMLEvent ev = thr.next();
 			if (ev.isStartElement()) {
-				depth++;
 
 				if (cachedVisible) {
 					StartElement se = ev.asStartElement();
 					String thid = thid(se);
 					if (thid != null) {
-						getChildByThid(thid).render(se, thr, thw);
+						getChildByThid(thid).render(
+								se,
+								new ThElementEventReader(se.getName(), thr,
+										true, true), thw);
 					} else {
 						thw.add(ev);
 					}
 				}
 			} else if (ev.isEndElement()) {
-				depth--;
-				if (depth <= 0) {
+
+				if (!thr.hasNext()) {
 					return ev.asEndElement();
 				} else if (cachedVisible) {
 					thw.add(ev);
@@ -113,7 +115,7 @@ public class Brick<T> extends AbstractBrick {
 				thw.add(ev);
 			}
 		}
-		throw new IllegalStateException(depth + "");
+		throw new IllegalStateException();
 	}
 
 	protected void renderHead(StartElement e, ThEventReader evr,

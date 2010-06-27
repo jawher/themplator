@@ -13,6 +13,7 @@ import javax.xml.stream.events.Attribute;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 
+import themplator.readers.ThElementEventReader;
 import themplator.readers.ThEventReader;
 import themplator.readers.ThStaxEventReader;
 import themplator.utils.StaxUtils;
@@ -22,7 +23,7 @@ import themplator.writers.ThStaxEventWriter;
 public class Themplate extends AbstractBrick {
 
 	public void render(ThEventReader markup, ThEventWriter result)
-	throws XMLStreamException {
+			throws XMLStreamException {
 		while (markup.hasNext()) {
 			XMLEvent ev = markup.next();
 			if (ev.isStartElement()) {
@@ -30,7 +31,11 @@ public class Themplate extends AbstractBrick {
 				String thid = thid(se);
 				if (thid != null) {
 					// FIXME:brick might not exist
-					getChildByThid(thid).render(se, markup, result);
+					getChildByThid(thid)
+							.render(
+									se,
+									new ThElementEventReader(se.getName(),
+											markup, true, true), result);
 				} else {
 					result.add(ev);
 				}

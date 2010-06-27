@@ -54,7 +54,7 @@ public class InjectMarkup<T> extends Brick<T> {
 		XMLEventReader evr = xmlInputFactory.createXMLEventReader(markup);
 		EndElement ee = renderBody(thr, new ThNopEventWriter());
 		ThEventReader othr = new ThChainingEventReader(
-				new ThElementEventReader(TH_BRICK, evr),
+				new ThElementEventReader(TH_BRICK, evr, false, false),
 				new ThReplayEventReader(Arrays.asList(ee)));
 
 		super.render(e, othr, thw);
