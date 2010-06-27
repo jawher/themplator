@@ -1,0 +1,8 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<root>
+	<ul thid="b" id="th" class="error">
+		<x xa="xv">
+			<li>some random text</li>
+		</x>
+	</ul>
+</root>
