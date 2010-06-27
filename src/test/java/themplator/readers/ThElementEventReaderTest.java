@@ -1,7 +1,7 @@
 package themplator.readers;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
+import static themplator.utils.XMLEventsUtils.*;
 
 import java.util.List;
 
@@ -13,11 +13,7 @@ import javax.xml.stream.events.XMLEvent;
 
 import org.junit.Test;
 
-import themplator.readers.ThElementEventReader;
-import themplator.readers.ThStaxEventReader;
-import themplator.utils.LogUtils;
 import themplator.utils.StaxUtils;
-import static themplator.utils.XMLEventsUtils.*;
 
 public class ThElementEventReaderTest {
 	@Test
@@ -85,7 +81,6 @@ public class ThElementEventReaderTest {
 	}
 	
 	protected void test(ThEventReader r, List<XMLEvent> expected) {
-		System.out.println("ThElementEventReaderTest.test()");
 		int pos = 0;
 		while (r.hasNext()) {
 			XMLEvent ev;
@@ -96,10 +91,8 @@ public class ThElementEventReaderTest {
 				return;
 			}
 			
-			System.out.println(LogUtils.str(ev));
 			if (!ev.isCharacters()
 					|| ev.asCharacters().getData().trim().length() > 0) {
-				System.out.println("!!");
 				assertEquals(expected.get(pos), ev);
 				pos++;
 				if (pos > expected.size()) {
