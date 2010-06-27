@@ -7,23 +7,29 @@ import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 
 public class ThElementEventReader implements ThEventReader {
+	private static enum State {
+		DISABLED, ENABLED, ENABLED_TMP
+	}
 	private ThEventReader delegate;
 	private final QName element;
-	private boolean emit = false;
+	private State state = State.DISABLED;
 	private XMLEvent next;
+	private boolean includeEndEvent;
 
-	public ThElementEventReader(QName element, ThEventReader delegate) {
-		super();
+	public ThElementEventReader(QName element, ThEventReader delegate,
+			boolean alreadyPositioned, boolean includeEndEvent) {
 		this.element = element;
 		this.delegate = delegate;
-		positionAtElement();
+		this.includeEndEvent=includeEndEvent;
+		if (alreadyPositioned) {
+			state=State.ENABLED;
+		} else
+			positionAtElement();
 	}
 
-	public ThElementEventReader(QName element, XMLEventReader delegate) {
-		super();
-		this.element = element;
-		this.delegate = new ThStaxEventReader(delegate);
-		positionAtElement();
+	public ThElementEventReader(QName element, XMLEventReader delegate,
+			boolean alreadyPositioned, boolean includeEndEvent) {
+		this(element, new ThStaxEventReader(delegate), alreadyPositioned, includeEndEvent);
 	}
 
 	private final void positionAtElement() {
@@ -38,7 +44,7 @@ public class ThElementEventReader implements ThEventReader {
 			if (ev.isStartElement()) {
 				StartElement se = ev.asStartElement();
 				if (se.getName().equals(element)) {
-					emit = true;
+					state=State.ENABLED;
 					return;
 				}
 			}
@@ -46,7 +52,7 @@ public class ThElementEventReader implements ThEventReader {
 	}
 
 	public boolean hasNext() {
-		if (!emit || !delegate.hasNext()) {
+		if (state==State.DISABLED || !delegate.hasNext()) {
 			return false;
 		}
 		if (next != null) {
@@ -59,17 +65,25 @@ public class ThElementEventReader implements ThEventReader {
 		}
 		if (next.isEndElement()
 				&& next.asEndElement().getName().equals(element)) {
-			emit = false;
+			if(includeEndEvent){
+				state=State.ENABLED_TMP;
+				return true;
+			} else {
+			state=State.DISABLED;
 			return false;
+			}
 		} else {
 			return true;
 		}
 	}
 
 	public XMLEvent next() throws XMLStreamException {
-		if (emit) {
+		if (state!=State.DISABLED) {
 			XMLEvent res = next;
 			next = null;
+			if(state==State.ENABLED_TMP){
+				state=State.DISABLED;
+			}
 			return res;
 		} else {
 			throw new UnsupportedOperationException();
