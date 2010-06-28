@@ -93,6 +93,9 @@ public class BrickDecoratorsTest extends BaseBrickTest<Brick<?>> {
 	private static String IN = "resources/decorators/brick.input.xml";
 	private static String INV_OUT = "resources/decorators/brick.not-visible.output.xml";
 
+	private static String in(String i) {
+		return "resources/decorators/" + i + ".input.xml";
+	}
 	private static String out(String o) {
 		return "resources/decorators/" + o + ".output.xml";
 	}
@@ -122,7 +125,26 @@ public class BrickDecoratorsTest extends BaseBrickTest<Brick<?>> {
 						out("post.aea_a.body-only"),
 						decs(postDec(evts(a("class", "error"), se("x"),
 								a("xa", "xv"))),
-								postDec(evts(a("id", "th")), evts())) }, });
+								postDec(evts(a("id", "th")), evts())) },
+				{
+						IN,
+						out("post.a_e_ae.same-attr"),
+						null,
+						null,
+						decs(postDec(evts(a("a", "x"))),
+								postDec(evts(se("dummy"))),
+								postDec(evts(a("a", "y")))) },
+
+				{
+						in("brick2"),
+						out("post.a_e_ae.same-attr"),
+						null,
+						null,
+						decs(postDec(evts(a("a", "x"))),
+								postDec(evts(se("dummy"))),
+								postDec(evts(a("a", "y")))) },
+
+		});
 	}
 
 	private String input;
@@ -144,30 +166,36 @@ public class BrickDecoratorsTest extends BaseBrickTest<Brick<?>> {
 
 	@Test
 	public void testBrickHandlingOfDecoratorsOrder() {
-		Brick<?> brick = new Brick<Object>("b");
-		for (Decorator<?> decorator : decorators) {
-			brick.add(decorator);
+		if (regularOutput != null) {
+			Brick<?> brick = new Brick<Object>("b");
+			for (Decorator<?> decorator : decorators) {
+				brick.add(decorator);
+			}
+			super.test(input, regularOutput, brick);
 		}
-		super.test(input, regularOutput, brick);
 	}
 
 	@Test
 	public void testInvisibleBrickHandlingOfDecorators() {
-		Brick<?> brick = new Brick<Object>("b");
-		brick.setVisible(false);
-		for (Decorator<?> decorator : decorators) {
-			brick.add(decorator);
+		if (invisibleOutput != null) {
+			Brick<?> brick = new Brick<Object>("b");
+			brick.setVisible(false);
+			for (Decorator<?> decorator : decorators) {
+				brick.add(decorator);
+			}
+			super.test(input, invisibleOutput, brick);
 		}
-		super.test(input, invisibleOutput, brick);
 	}
 
 	@Test
 	public void testRenderBodyOnlyBrickHandlingOfDecorators() {
-		Brick<?> brick = new Brick<Object>("b");
-		brick.setRenderBodyOnly(true);
-		for (Decorator<?> decorator : decorators) {
-			brick.add(decorator);
+		if (renderBodyOnlyOutput != null) {
+			Brick<?> brick = new Brick<Object>("b");
+			brick.setRenderBodyOnly(true);
+			for (Decorator<?> decorator : decorators) {
+				brick.add(decorator);
+			}
+			super.test(input, renderBodyOnlyOutput, brick);
 		}
-		super.test(input, renderBodyOnlyOutput, brick);
 	}
 }

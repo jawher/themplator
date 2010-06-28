@@ -3,7 +3,10 @@ package themplator;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLEventFactory;
@@ -118,8 +121,8 @@ public class Brick<T> extends AbstractBrick {
 		throw new IllegalStateException();
 	}
 
-	protected void renderHead(StartElement e, ThEventReader evr,
-			ThEventWriter evw) throws XMLStreamException {
+	protected void renderHead(StartElement startElementEvent,
+			ThEventReader evr, ThEventWriter evw) throws XMLStreamException {
 		if (!isVisible()) {
 			return;
 		}
@@ -127,32 +130,45 @@ public class Brick<T> extends AbstractBrick {
 		boolean cachedRenderBodyOnly = isRenderBodyOnly();
 		Collection<Decorator> decorators = getDecorators();
 
+		XMLEventFactory xmlEventFactory = XMLEventFactory.newInstance();
 		if (!cachedRenderBodyOnly) {
 			List<XMLEvent> preStartEvents = new ArrayList<XMLEvent>();
 
 			for (Decorator d : decorators) {
-				preStartEvents.addAll(d.preBrickStartElement(XMLEventFactory
-						.newInstance()));
+				preStartEvents.addAll(d.preBrickStartElement(xmlEventFactory));
 			}
 
 			for (XMLEvent xmlEvent : preStartEvents) {
 				evw.add(xmlEvent);
 			}
 
-			evw.add(e);
+			evw.add(xmlEventFactory.createStartElement(
+					startElementEvent.getName(), null,
+					startElementEvent.getNamespaces()));
 		}
 
 		List<List<XMLEvent>> postStartEvents = new ArrayList<List<XMLEvent>>();
+
 		for (Decorator d : decorators) {
-			postStartEvents.add(d.postBrickStartElement(XMLEventFactory
-					.newInstance()));
+			postStartEvents.add(d.postBrickStartElement(xmlEventFactory));
 		}
 
-		Pair<List<XMLEvent>, List<XMLEvent>> sortedPostStartEvents = sortOpenEvents(postStartEvents);
+		Pair<List<Attribute>, List<XMLEvent>> sortedPostStartEvents = sortOpenEvents(postStartEvents);
 		if (!cachedRenderBodyOnly) {
-			for (XMLEvent xmlEvent : sortedPostStartEvents.getLeft()) {
-				evw.add(xmlEvent);
+			Iterator elementAttributes = startElementEvent.getAttributes();
+			Map<QName, Attribute> attributesAccum = new HashMap<QName, Attribute>();
+			while (elementAttributes.hasNext()) {
+				Attribute a = (Attribute) elementAttributes.next();
+				attributesAccum.put(a.getName(), a);
 			}
+			for (Attribute a : sortedPostStartEvents.getLeft()) {
+				attributesAccum.put(a.getName(), a);
+			}
+
+			for (Attribute a : attributesAccum.values()) {
+				evw.add(a);
+			}
+
 		}
 		for (XMLEvent xmlEvent : sortedPostStartEvents.getRight()) {
 			evw.add(xmlEvent);
@@ -201,16 +217,16 @@ public class Brick<T> extends AbstractBrick {
 		}
 	}
 
-	private Pair<List<XMLEvent>, List<XMLEvent>> sortOpenEvents(
+	private Pair<List<Attribute>, List<XMLEvent>> sortOpenEvents(
 			List<List<XMLEvent>> eventsList) {
-		List<XMLEvent> headAttrs = new ArrayList<XMLEvent>();
+		List<Attribute> headAttrs = new ArrayList<Attribute>();
 		List<XMLEvent> others = new ArrayList<XMLEvent>();
 		for (List<XMLEvent> events : eventsList) {
 			boolean head = true;
 			for (XMLEvent ev : events) {
 				if (head) {
 					if (ev.isAttribute()) {
-						headAttrs.add(ev);
+						headAttrs.add((Attribute) ev);
 					} else {
 						head = false;
 						others.add(ev);
@@ -221,7 +237,7 @@ public class Brick<T> extends AbstractBrick {
 			}
 		}
 
-		return new Pair<List<XMLEvent>, List<XMLEvent>>(headAttrs, others);
+		return new Pair<List<Attribute>, List<XMLEvent>>(headAttrs, others);
 	}
 
 }
